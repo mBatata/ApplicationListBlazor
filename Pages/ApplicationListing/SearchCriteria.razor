@@ -1,0 +1,25 @@
+<div class="row" style="border: 2px gray solid; padding: 10px; margin-bottom: 20px;">
+    <div class="col-12">
+        <label for="SearchApplicationName">Applicant: </label>
+        <input id="SearchApplicationName"type="text" @bind=@SearchApplicantName />
+    </div>
+    <div class="col-12">
+        <label for="SearchApplicationStatus">Applicant Status: </label>
+        <DropDownList Id="SearchApplicationStatus" HasDefaultSelectOption=true InputData=@EnumHelper.GetApplicationStatuses() OnSelectedChanged=@((value) => this.SearchApplicantStatus = value) />
+    </div>
+    <div class="offset-6 col-6">
+        <button @onclick=@(() => SearchClicked.Invoke(new SearchFilterDto(this.SearchApplicantName, this.SearchApplicantStatus)))>Search</button>
+    </div>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public Action<SearchFilterDto> SearchClicked { get; set; } = default!;
+    
+    private string? SearchApplicantName { get; set; }
+
+    private string? SearchApplicantStatus { get; set; }
+
+    private bool? SearchIsApproved { get; set; }
+}

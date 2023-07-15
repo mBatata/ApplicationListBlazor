@@ -1,0 +1,24 @@
+@if (Applications.Any())
+{
+    foreach (var application in Applications)
+    {
+        <div class="row" style="border: 1px solid black; padding: 10px; margin-bottom: 5px;">
+            <div class="col-12">
+                <p><b>Applicant:</b> @application.ApplicantName</p>
+            </div>
+            <div class="col-12">
+                <p><b>ApplicantStatus:</b> @(EnumHelper.GetEnumTranslation(application.ApplicationStatus))</p>
+            </div>
+        </div>  
+    } 
+}
+else
+{
+    <p>No applications found.</p>
+}
+
+@code
+{
+    [Parameter, EditorRequired]
+    public IEnumerable<ApplicationDto> Applications { get; set; } = default!;
+}

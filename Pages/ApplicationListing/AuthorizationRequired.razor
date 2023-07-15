@@ -1,0 +1,33 @@
+@if(IsAuthorized)
+{
+    @AuthorizedFragment
+}
+else
+{
+    @NotAuthorizedFragment
+}
+
+@code
+{
+    private bool IsAuthorized { get; set; }
+
+    [Parameter]
+    public RenderFragment? AuthorizedFragment { get; set; }
+
+    [Parameter]
+    public RenderFragment? NotAuthorizedFragment { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.IsAuthorized = true;
+    }
+
+    Action ValidateAuthorization() => () => this.IsAuthorized = true;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        this.IsAuthorized = true;
+    }
+}
+
+

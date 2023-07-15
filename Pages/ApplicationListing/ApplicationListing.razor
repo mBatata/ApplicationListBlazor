@@ -1,0 +1,30 @@
+@page "/applications-listing"
+@using Blazor.Data;
+
+<PageTitle>Listing Page</PageTitle>
+
+<AuthorizationRequired >
+    <AuthorizedFragment>
+        <SearchCriteria SearchClicked=@OnSearchClick />
+        <SearchResults Applications=@Applications />
+    </AuthorizedFragment>
+    <NotAuthorizedFragment>
+        404 - Not Found
+    </NotAuthorizedFragment>
+</AuthorizationRequired>
+
+@code
+{
+    [Inject]
+    private ApplicationService ApplicationService { get; init; } = default!;
+    
+    private IEnumerable<ApplicationDto> Applications { get; set; } = default!;
+
+    protected override void OnInitialized() => this.Applications = this.ApplicationService.GetApplications();
+
+    private void OnSearchClick(SearchFilterDto searchFilter)
+    {
+        this.Applications = this.ApplicationService.GetApplications(searchFilter);
+        this.StateHasChanged();
+    }
+}
