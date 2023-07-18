@@ -1,0 +1,42 @@
+@implements IAsyncDisposable
+
+<a class="btn" @onclick=OnClick>Download File</a>
+
+@code {
+    [Inject]
+    private IJSRuntime Js { get; init; } = default!;
+
+    [Inject]
+    private ApplicationService ApplicationService { get; init; } = default!;
+
+    [Inject]
+    private NavigationManager NavigationManager {get; init; } = default!;
+
+    [Parameter, EditorRequired]
+    public IEnumerable<ApplicationDto> Applications { get; set; } = default!;
+
+    private IJSObjectReference? jsModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            jsModule = await Js.InvokeAsync<IJSObjectReference>("import", NavigationManager.ToAbsoluteUri("./Scripts/DownloadFile.js"));
+        }
+    }
+
+    protected async Task OnClick()
+    {
+        using var stream = DownloadHelper.GetFileDataStream(Applications);
+        using var streamRef = new DotNetStreamReference(new MemoryStream(stream.ToArray()));
+        await jsModule!.InvokeVoidAsync("DownloadUtils.downloadFileFromStream", $"MyCsv{DateTime.Now:ddMMyyyyhhmmss}.csv", streamRef);
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (jsModule is not null)
+        {
+            await jsModule.DisposeAsync();
+        }
+    }
+}
