@@ -4,10 +4,16 @@
     {
         <div class="row" style="border: 1px solid black; padding: 10px; margin-bottom: 5px;">
             <div class="col-12">
+                <p><b>Id:</b> @application.Id</p>
+            </div>
+            <div class="col-12">
                 <p><b>Applicant:</b> @application.ApplicantName</p>
             </div>
             <div class="col-12">
                 <p><b>ApplicantStatus:</b> @(EnumHelper.GetEnumTranslation(application.ApplicationStatus))</p>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" @onclick=@(() => OnClick(application.Id))>View Application</button>
             </div>
         </div>  
     } 
@@ -19,6 +25,11 @@ else
 
 @code
 {
+    [Inject]
+    NavigationManager NavigationManager { get; init; } = default!;
+
     [Parameter, EditorRequired]
     public IEnumerable<ApplicationDto> Applications { get; set; } = default!;
+
+    void OnClick(Guid applicationId) => NavigationManager.NavigateTo("application-viewer?Id=" + applicationId);
 }

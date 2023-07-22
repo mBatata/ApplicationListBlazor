@@ -1,0 +1,78 @@
+@page "/application-viewer"
+@using System.Web;
+
+@if (Application == null)
+{
+    <label>Application not found. <a class="btn btn-link" @onclick=OnBack>Click here</a> to go back.</label>
+    return;
+}
+
+<div class="row">
+    <div class="col-6">
+        <Input  Id="ApplicantName"
+                IsEditable=@(ComponentMode == ComponentMode.Edit)
+                LabelText="Applicant"
+                @bind-Value=@Application.ApplicantName />
+    </div>
+</div>
+<div class="col-6">
+    <DropDownList   InputData=@EnumHelper.GetApplicationStatuses()
+                    IsEditable=@(ComponentMode == ComponentMode.Edit)
+                    LabelText="Applicant Status"
+                    @bind-SelectedValue=Application.ApplicationStatus />
+</div>
+<div class="row">
+    <div class="col-6">
+        <button class="btn btn-secondary" @onclick=OnBack>Go back</button>
+    </div>
+    <div class="col-6">
+        @if (ComponentMode == ComponentMode.Edit)
+        {
+            <button class="btn btn-secondary" @onclick=@(() => ChangeMode(ComponentMode.View))>Cancel</button>
+            <button class="btn btn-primary" @onclick=OnSave>Save</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" @onclick=@(() => ChangeMode(ComponentMode.Edit))>Edit</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Inject]
+    NavigationManager NavigationManager { get; init; } = default!;
+
+    [Inject]
+    ApplicationService ApplicationService { get; init; } = default!;
+
+    ApplicationDto? Application { get; set; }
+
+    ComponentMode ComponentMode { get; set; } = ComponentMode.View;
+
+    protected override void OnInitialized()
+    {
+        var applicationId = GetApplicationId();
+        Application = ApplicationService.GetApplications().FirstOrDefault(x => x.Id == applicationId);
+    }
+
+    void OnBack() => NavigationManager.NavigateTo("applications-listing");
+
+    void OnSave()
+    {
+        Application = ApplicationService.UpdateApplication(Application!);
+        ChangeMode(ComponentMode.View);
+    }
+
+    Guid GetApplicationId()
+    {
+        var queryStrings= HttpUtility.ParseQueryString(new Uri(NavigationManager.Uri).Query);
+        return Guid.TryParse(queryStrings["Id"], out var id) ? id : Guid.Empty;
+    }
+
+    void ChangeMode(ComponentMode componentMode)
+    {
+        ComponentMode = componentMode;
+        StateHasChanged();
+    }
+}
+

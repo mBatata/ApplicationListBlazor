@@ -1,0 +1,78 @@
+@if (IsEditable)
+{
+    @if (!string.IsNullOrWhiteSpace(LabelText))
+    {
+        <label for=@Id>@LabelText: </label>
+    }
+    
+    <select id=@Id @bind=@SelectedValue>
+        @if (HasDefaultSelectOption)
+        {
+            <option value="">@DefaultSelectOptionText</option>
+        }
+
+        @foreach (var (key, value) in InputData)
+        {
+            <option value=@key>@value</option>
+        }
+    </select>
+}
+else
+{
+    <p>
+        @if (!string.IsNullOrWhiteSpace(LabelText))
+        {
+            <b>@LabelText:</b>
+        }
+
+        @if (!EqualityComparer<TDropDown>.Default.Equals(SelectedValue) && InputData.TryGetValue(SelectedValue.ToString()!, out var value))
+        {
+            <text>@value</text>
+        }
+        else
+        {
+            <text>-</text>
+        }
+    </p>
+}
+
+@typeparam TDropDown
+@code
+{
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public bool IsEditable { get; set; }
+
+    [Parameter]
+    public bool HasDefaultSelectOption { get; set; }
+
+    [Parameter]
+    public string DefaultSelectOptionText { get; set; } = "Please select an option";
+
+    [Parameter]
+    public string? LabelText { get; set; }
+
+    [Parameter, EditorRequired]
+    public IDictionary<string, string> InputData { get; set; } = default!;
+
+    [Parameter]
+    public TDropDown SelectedValue
+    {
+        get => _selectedValue;
+        set
+        {
+            if (!EqualityComparer<TDropDown>.Default.Equals(_selectedValue, value))
+            {
+                _selectedValue = value;
+                SelectedValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<TDropDown> SelectedValueChanged { get; set; }
+
+    TDropDown _selectedValue = default!;
+}
