@@ -8,26 +8,24 @@ public static class EnumHelper
 
 		foreach (var applicationStatus in Enum.GetValues<ApplicationStatus>())
 		{
-			applicationStatuses.Add(applicationStatus.ToString(), GetEnumTranslation(applicationStatus!));
+			applicationStatuses.Add(applicationStatus.ToString(), GetEnumTranslation(applicationStatus!)!);
 		}
 
 		return applicationStatuses;
 	}
 
-	public static string GetEnumTranslation(object value)
+	public static string? GetEnumTranslation(object? value)
 	{
-		var enumTranslation = value.ToString()!;
-
 		if (value is ApplicationStatus applicationStatus)
 		{
 			return applicationStatus switch
 			{
 				ApplicationStatus.Processed => "Processed",
 				ApplicationStatus.NotProcessed => "Not Processed",
-				_ => enumTranslation
+				_ => applicationStatus.ToString()
 			};
 		}
 
-		return enumTranslation;
+		return value?.ToString();
 	}
 }

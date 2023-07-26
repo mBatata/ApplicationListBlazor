@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-6">
+        <Input  Id="ApplicantName"
+                IsEditable=false
+                LabelText="Applicant"
+                Value=Application.ApplicantName />
+    </div>
+</div>
+<div class="col-6">
+    <DropDownList   InputData=ApplicationStatuses
+                    IsEditable=false
+                    LabelText="Applicant Status"
+                    SelectedValue=Application.ApplicationStatus />
+</div>
+<div class="row">
+    <div class="col-6">
+        <button class="btn btn-secondary" @onclick=@(async () => await GoBackClick.InvokeAsync())>Go back</button>
+    </div>
+    <div class="col-6">
+       <button class="btn btn-primary" @onclick=@(async () => await EditClick.InvokeAsync())>Edit</button>
+    </div>
+</div>
+
+@code{
+    [Parameter,EditorRequired]
+    public ApplicationDto Application { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public IDictionary<string, string> ApplicationStatuses { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback GoBackClick { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback EditClick { get; set; } = default!;
+}

@@ -1,0 +1,56 @@
+<EditForm Model=Application OnValidSubmit=SaveClick>
+    <FluentValidationValidator />
+
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="ApplicantName"><b>Applicant:</b></label>
+                <InputText id="ApplicantName" class="form-control" DisplayName="Applicant" @bind-Value=Application.ApplicantName />
+                <ValidationMessage For=@(() => Application.ApplicantName) />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="ApplicationStatus"><b>Applicantion Status:</b></label>
+                <InputSelect id="ApplicationStatus" class="form-control" @bind-Value=Application.ApplicationStatus>
+                    <option value=""></option>
+                    @foreach(var (key, value) in ApplicationStatuses)
+                    {
+                        <option value=@key>@value</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For=@(() => Application.ApplicationStatus) />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-secondary" @onclick=@(async () => await GoBackClick.InvokeAsync())>Go back</button>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-secondary" @onclick=@(async () => await CancelClick.InvokeAsync())>Cancel</button>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+    </div>
+</EditForm>
+
+@code{
+    [Parameter, EditorRequired]
+    public ApplicationDto Application { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public IDictionary<string, string> ApplicationStatuses { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback GoBackClick { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback CancelClick { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback SaveClick { get; set; } = default!;
+}

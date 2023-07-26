@@ -7,36 +7,21 @@
     return;
 }
 
-<div class="row">
-    <div class="col-6">
-        <Input  Id="ApplicantName"
-                IsEditable=@(ComponentMode == ComponentMode.Edit)
-                LabelText="Applicant"
-                @bind-Value=@Application.ApplicantName />
-    </div>
-</div>
-<div class="col-6">
-    <DropDownList   InputData=@EnumHelper.GetApplicationStatuses()
-                    IsEditable=@(ComponentMode == ComponentMode.Edit)
-                    LabelText="Applicant Status"
-                    @bind-SelectedValue=Application.ApplicationStatus />
-</div>
-<div class="row">
-    <div class="col-6">
-        <button class="btn btn-secondary" @onclick=OnBack>Go back</button>
-    </div>
-    <div class="col-6">
-        @if (ComponentMode == ComponentMode.Edit)
-        {
-            <button class="btn btn-secondary" @onclick=@(() => ChangeMode(ComponentMode.View))>Cancel</button>
-            <button class="btn btn-primary" @onclick=OnSave>Save</button>
-        }
-        else
-        {
-            <button class="btn btn-primary" @onclick=@(() => ChangeMode(ComponentMode.Edit))>Edit</button>
-        }
-    </div>
-</div>
+@if (ComponentMode == ComponentMode.Edit)
+{
+    <ApplicationViewerEditMode  Application=Application 
+                                ApplicationStatuses=ApplicationStatuses
+                                GoBackClick=OnBack
+                                CancelClick=@(() => ChangeMode(ComponentMode.View))
+                                SaveClick=OnSave />
+}
+else
+{
+    <ApplicationViewerViewMode  Application=Application
+                                ApplicationStatuses=ApplicationStatuses
+                                GoBackClick=OnBack
+                                EditClick=@(() => ChangeMode(ComponentMode.Edit)) />
+}
 
 @code {
     [Inject]
@@ -47,12 +32,15 @@
 
     ApplicationDto? Application { get; set; }
 
+    IDictionary<string, string> ApplicationStatuses { get; set; } = default!;
+
     ComponentMode ComponentMode { get; set; } = ComponentMode.View;
 
     protected override void OnInitialized()
     {
         var applicationId = GetApplicationId();
         Application = ApplicationService.GetApplications().FirstOrDefault(x => x.Id == applicationId);
+        ApplicationStatuses = EnumHelper.GetApplicationStatuses();
     }
 
     void OnBack() => NavigationManager.NavigateTo("applications-listing");
