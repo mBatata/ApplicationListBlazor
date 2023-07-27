@@ -1,4 +1,4 @@
-<EditForm Model=Application OnValidSubmit=SaveClick>
+<EditForm Model=Application OnValidSubmit=ValidateIfOkay>
     <FluentValidationValidator />
 
     <div class="row">
@@ -27,18 +27,44 @@
         </div>
     </div>
 
+    <LocationViewerEditMode Location=Application.Location />
+
     <div class="row">
         <div class="col-6">
-            <button class="btn btn-secondary" @onclick=@(async () => await GoBackClick.InvokeAsync())>Go back</button>
+            <button class="btn btn-secondary" type="button" @onclick=@(async () => await GoBackClick.InvokeAsync())>Go back</button>
         </div>
         <div class="col-6">
-            <button class="btn btn-secondary" @onclick=@(async () => await CancelClick.InvokeAsync())>Cancel</button>
+            <button class="btn btn-secondary" type="button" @onclick=@(async () => await CancelClick.InvokeAsync())>Cancel</button>
             <button class="btn btn-primary" type="submit">Save</button>
         </div>
     </div>
 </EditForm>
 
+<button class="btn btn-primary btn-modal d-none" type="submit" data-bs-toggle="modal" data-bs-target="#exampleModal">Save</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" @onclick=SaveClick>Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @code{
+    [Inject]
+    IJSRuntime JsRuntime { get; init; } = default!;
+
     [Parameter, EditorRequired]
     public ApplicationDto Application { get; set; } = default!;
 
@@ -53,4 +79,9 @@
 
     [Parameter, EditorRequired]
     public EventCallback SaveClick { get; set; } = default!;
+
+    async Task ValidateIfOkay()
+    {
+      await JsRuntime.InvokeVoidAsync("OpenModal");
+    }
 }

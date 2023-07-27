@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-6">
+        <div class="form-group">
+            <label for="ApplicantName"><b>Address:</b></label>
+            <InputText id="ApplicantName" class="form-control" DisplayName="Applicant" @bind-Value=Location.Address />
+            <ValidationMessage For=@(() => Location.Address) />
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter, EditorRequired]
+    public LocationDto Location { get; set; } = default!;
+}

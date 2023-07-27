@@ -20,7 +20,11 @@ public class ApplicationService
 						ApplicationStatus =
 							i % 2 == 0
 								? ApplicationStatus.Processed
-								: ApplicationStatus.NotProcessed
+								: ApplicationStatus.NotProcessed,
+						Location = new LocationDto()
+						{
+							Address = "Kermit Town"
+						}
 					}
 				);
 			}
@@ -59,7 +63,8 @@ public class ApplicationService
 
 		application.ApplicantName = newApplication.ApplicantName;
 		application.ApplicationStatus = newApplication.ApplicationStatus;
-		
+		application.Location.Address = newApplication.Location.Address;
+
 		return application;
 	}
 }

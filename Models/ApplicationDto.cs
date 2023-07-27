@@ -5,4 +5,6 @@ public class ApplicationDto
 	public string? ApplicantName { get; set; }
 	
 	public ApplicationStatus? ApplicationStatus { get; set; }
+
+	public LocationDto Location { get; set; } = default!;
 }

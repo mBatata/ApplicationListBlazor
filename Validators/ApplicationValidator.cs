@@ -11,5 +11,9 @@ public class ApplicationValidator : AbstractValidator<ApplicationDto>
 		this.RuleFor(x => x.ApplicationStatus)
 			.NotEmpty()
 			.WithMessage(translationService.GetRequiredMessage(nameof(ApplicationDto.ApplicationStatus)));		
+			
+		this.RuleFor(x => x.Location.Address)
+			.NotEmpty()
+			.WithMessage(translationService.GetRequiredMessage(nameof(LocationDto.Address)));
 	}
 }
