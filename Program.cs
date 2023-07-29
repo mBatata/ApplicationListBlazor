@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Blazor.Data;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ApplicationService>();
 builder.Services.AddSingleton<TranslationService>();
+builder.Services.AddSingleton<IValidator<ApplicationDto>, ApplicationValidator>();
+builder.Services.AddSingleton<IValidator<LocationDto>, LocationValidator>();
 
 var app = builder.Build();
 

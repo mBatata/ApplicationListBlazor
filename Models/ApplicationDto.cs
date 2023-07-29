@@ -6,5 +6,5 @@ public class ApplicationDto
 	
 	public ApplicationStatus? ApplicationStatus { get; set; }
 
-	public LocationDto Location { get; set; } = default!;
+	public LocationDto? Location { get; set; }
 }

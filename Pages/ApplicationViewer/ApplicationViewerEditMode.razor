@@ -27,7 +27,11 @@
         </div>
     </div>
 
-    <LocationViewerEditMode Location=Application.Location />
+    @if (Application.Location != null)
+    {
+      <LocationViewerEditMode Location=Application.Location />
+    }
+    
 
     <div class="row">
         <div class="col-6">
